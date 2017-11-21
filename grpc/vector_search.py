@@ -19,10 +19,12 @@ class SearchVector(object):
   def __init__(self):
     try:
       self.index = faiss.read_index(INDEX_FILE)
+      log.info('Init')
     except Exception as e:
       log.error(str(e))
 
   def search(self, vector):
+    log.info('search')
     xq = np.expand_dims(np.array(vector, dtype=np.float32), axis=0)
 
     xq.astype(np.float32)
