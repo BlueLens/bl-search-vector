@@ -22,13 +22,15 @@ option objc_class_prefix = "STYL";
 package searchvector;
 
 service Search{
-  rpc SearchVector(SearchRequest) returns (stream SearchReply) {}
+  rpc SearchVector(SearchRequest) returns (SearchReply) {}
 }
 
 message SearchRequest {
   bytes vector = 1;
+  int32 candidate = 2;
 }
 
 message SearchReply {
-  bytes vector = 1;
+  bytes vector_d = 1;
+  bytes vector_i = 2;
 }

@@ -17,6 +17,7 @@ import time
 
 import grpc
 import os
+import numpy as np
 
 from vector_search import SearchVector
 import vector_search_pb2
@@ -31,12 +32,8 @@ class Search(vector_search_pb2_grpc.SearchServicer):
     self.vc = SearchVector()
 
   def SearchVector(self, request, context):
-    results = self.vc.search(request.vector)
-
-    for result in results:
-      searchReply = vector_search_pb2.SearchReply()
-      searchReply.vector = result
-      yield searchReply
+    v_d, v_i = self.vc.search(request.vector)
+    return vector_search_pb2.SearchReply(vector_d=np.array(v_d).tobytes(), vector_i=np.array(v_i).tobytes())
 
 
 def serve():

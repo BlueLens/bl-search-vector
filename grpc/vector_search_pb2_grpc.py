@@ -14,7 +14,7 @@ class SearchStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.SearchVector = channel.unary_stream(
+    self.SearchVector = channel.unary_unary(
         '/searchvector.Search/SearchVector',
         request_serializer=vector__search__pb2.SearchRequest.SerializeToString,
         response_deserializer=vector__search__pb2.SearchReply.FromString,
@@ -35,7 +35,7 @@ class SearchServicer(object):
 
 def add_SearchServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'SearchVector': grpc.unary_stream_rpc_method_handler(
+      'SearchVector': grpc.unary_unary_rpc_method_handler(
           servicer.SearchVector,
           request_deserializer=vector__search__pb2.SearchRequest.FromString,
           response_serializer=vector__search__pb2.SearchReply.SerializeToString,

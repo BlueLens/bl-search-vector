@@ -18,19 +18,22 @@ from __future__ import print_function
 
 import grpc
 import os
+import numpy as np
 
-from . import vector_search_pb2
-from . import vector_search_pb2_grpc
+import vector_search_pb2
+import vector_search_pb2_grpc
 
 
-OD_HOST = os.environ['OD_HOST']
-OD_PORT = os.environ['OD_PORT']
+SEARCH_HOST = os.environ['SEARCH_HOST']
+# SEARCH_HOST = 'localhost'
+SEARCH_PORT = os.environ['SEARCH_PORT']
 
 
 def run():
-  channel = grpc.insecure_channel(OD_HOST + ':' + OD_PORT)
+  channel = grpc.insecure_channel(SEARCH_HOST + ':' + SEARCH_PORT)
   stub = vector_search_pb2_grpc.SearchStub(channel)
-  results = stub.SearchVector(vector_search_pb2.SearchRequest(vector=[0.99, 0.32]))
+  v = np.array([0.12343244, 0.23243243])
+  results = stub.SearchVector(vector_search_pb2.SearchRequest(vector=v.tobytes()))
 
   for result in results:
     print(result)

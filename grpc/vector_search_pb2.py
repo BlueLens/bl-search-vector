@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='vector_search.proto',
   package='searchvector',
   syntax='proto3',
-  serialized_pb=_b('\n\x13vector_search.proto\x12\x0csearchvector\"\x1f\n\rSearchRequest\x12\x0e\n\x06vector\x18\x01 \x01(\x0c\"\x1d\n\x0bSearchReply\x12\x0e\n\x06vector\x18\x01 \x01(\x0c\x32T\n\x06Search\x12J\n\x0cSearchVector\x12\x1b.searchvector.SearchRequest\x1a\x19.searchvector.SearchReply\"\x00\x30\x01\x42\x38\n\x1aio.stylelens.search.vectorB\x11SearchVectorProtoP\x01\xa2\x02\x04STYLb\x06proto3')
+  serialized_pb=_b('\n\x13vector_search.proto\x12\x0csearchvector\"2\n\rSearchRequest\x12\x0e\n\x06vector\x18\x01 \x01(\x0c\x12\x11\n\tcandidate\x18\x02 \x01(\x05\"1\n\x0bSearchReply\x12\x10\n\x08vector_d\x18\x01 \x01(\x0c\x12\x10\n\x08vector_i\x18\x02 \x01(\x0c\x32R\n\x06Search\x12H\n\x0cSearchVector\x12\x1b.searchvector.SearchRequest\x1a\x19.searchvector.SearchReply\"\x00\x42\x38\n\x1aio.stylelens.search.vectorB\x11SearchVectorProtoP\x01\xa2\x02\x04STYLb\x06proto3')
 )
 
 
@@ -39,6 +39,13 @@ _SEARCHREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='candidate', full_name='searchvector.SearchRequest.candidate', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -52,7 +59,7 @@ _SEARCHREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=37,
-  serialized_end=68,
+  serialized_end=87,
 )
 
 
@@ -64,8 +71,15 @@ _SEARCHREPLY = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='vector', full_name='searchvector.SearchReply.vector', index=0,
+      name='vector_d', full_name='searchvector.SearchReply.vector_d', index=0,
       number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vector_i', full_name='searchvector.SearchReply.vector_i', index=1,
+      number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -82,8 +96,8 @@ _SEARCHREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=70,
-  serialized_end=99,
+  serialized_start=89,
+  serialized_end=138,
 )
 
 DESCRIPTOR.message_types_by_name['SearchRequest'] = _SEARCHREQUEST
@@ -114,8 +128,8 @@ _SEARCH = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=101,
-  serialized_end=185,
+  serialized_start=140,
+  serialized_end=222,
   methods=[
   _descriptor.MethodDescriptor(
     name='SearchVector',
