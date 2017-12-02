@@ -1,31 +1,31 @@
-# Copyright 2015 gRPC authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
+from multiprocessing import Process
 from concurrent import futures
 import time
 
 import grpc
 import os
+import signal
+import sys
+import redis
 import numpy as np
 
 from vector_search import SearchVector
 import vector_search_pb2
 import vector_search_pb2_grpc
+from bluelens_log import Logging
 
 
+REDIS_SEARCH_RESTART_QUEUE = 'bl:search:restart:queue'
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
+REDIS_SERVER = os.environ['REDIS_SERVER']
+REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+rconn = redis.StrictRedis(REDIS_SERVER, port=6379, password=REDIS_PASSWORD)
+options = {
+  'REDIS_SERVER': REDIS_SERVER,
+  'REDIS_PASSWORD': REDIS_PASSWORD
+}
+log = Logging(options, tag='bl-search-vector')
 
 class Search(vector_search_pb2_grpc.SearchServicer):
   def __init__(self):
@@ -36,7 +36,8 @@ class Search(vector_search_pb2_grpc.SearchServicer):
     return vector_search_pb2.SearchReply(vector_d=np.array(v_d).tobytes(), vector_i=np.array(v_i).tobytes())
 
 
-def serve():
+def serve(rconn):
+  log.info('Start serve')
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=50))
   vector_search_pb2_grpc.add_SearchServicer_to_server(Search(), server)
   server.add_insecure_port('[::]:50054')
@@ -47,5 +48,17 @@ def serve():
   except KeyboardInterrupt:
     server.stop(0)
 
+def restart(rconn, pids):
+  while True:
+    key, value = rconn.blpop([REDIS_SEARCH_RESTART_QUEUE])
+    log.info('Restart serve')
+    for pid in pids:
+      os.kill(pid, signal.SIGTERM)
+    sys.exit()
+
 if __name__ == '__main__':
-  serve()
+  pids = []
+  p1 = Process(target=serve, args=(rconn,))
+  p1.start()
+  pids.append(p1.pid)
+  Process(target=restart, args=(rconn, pids)).start()
