@@ -2,7 +2,7 @@
 
 export ORG="bluelens"
 export IMAGE="bl-search-vector"
-export TAG="latest"
+export TAG="dev"
 
 docker login
 
