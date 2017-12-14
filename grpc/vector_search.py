@@ -10,9 +10,10 @@ from bluelens_log import Logging
 AWS_BUCKET = 'bluelens-style-index'
 AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-INDEX_FILE = os.environ['INDEX_FILE']
 REDIS_SERVER = os.environ['REDIS_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+RELEASE_MODE = os.environ['RELEASE_MODE']
+INDEX_FILE = 'faiss.index'
 options = {
   'REDIS_SERVER': REDIS_SERVER,
   'REDIS_PASSWORD': REDIS_PASSWORD
@@ -33,7 +34,7 @@ class SearchVector(object):
     log.info('load_index_file')
     file = os.path.join(os.getcwd(), INDEX_FILE)
     try:
-      return storage.download_file_from_bucket(AWS_BUCKET, file, INDEX_FILE)
+      return storage.download_file_from_bucket(AWS_BUCKET, file, RELEASE_MODE + '/' + INDEX_FILE)
     except:
       log.error('download error')
       return None

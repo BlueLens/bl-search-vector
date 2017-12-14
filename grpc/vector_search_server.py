@@ -20,6 +20,8 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+GRPC_PORT = os.environ['GRPC_PORT']
+
 rconn = redis.StrictRedis(REDIS_SERVER, port=6379, password=REDIS_PASSWORD)
 options = {
   'REDIS_SERVER': REDIS_SERVER,
@@ -40,7 +42,7 @@ def serve(rconn):
   log.info('Start serve')
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=50))
   vector_search_pb2_grpc.add_SearchServicer_to_server(Search(), server)
-  server.add_insecure_port('[::]:50054')
+  server.add_insecure_port('[::]:' + GRPC_PORT)
   server.start()
   try:
     while True:
