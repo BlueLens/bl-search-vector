@@ -39,12 +39,12 @@ class SearchVector(object):
       log.error('download error')
       return None
 
-  def search(self, vector):
+  def search(self, vector, candidate=10):
     log.info('search')
     xq = np.expand_dims(np.frombuffer(vector, dtype=np.float32), axis=0)
 
     xq.astype(np.float32)
-    result_d, result_i = self.index.search(xq, 10)
+    result_d, result_i = self.index.search(xq, candidate)
     log.debug(result_d)
     log.debug(result_i)
     return np.squeeze(result_d), np.squeeze(result_i)

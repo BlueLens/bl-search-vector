@@ -34,7 +34,7 @@ class Search(vector_search_pb2_grpc.SearchServicer):
     self.vc = SearchVector()
 
   def SearchVector(self, request, context):
-    v_d, v_i = self.vc.search(request.vector)
+    v_d, v_i = self.vc.search(request.vector, request.candidate)
     return vector_search_pb2.SearchReply(vector_d=np.array(v_d).tobytes(), vector_i=np.array(v_i).tobytes())
 
 
